@@ -1,9 +1,6 @@
 package heap;
 
-import net.datastructures.CompleteBinaryTree;
-import net.datastructures.EmptyTreeException;
-import net.datastructures.LinkedBinaryTree;
-import net.datastructures.Position;
+import net.datastructures.*;
 
 /**
  * An implementation of a complete binary tree by means 
@@ -22,11 +19,14 @@ import net.datastructures.Position;
 
 public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E> 
 		implements CompleteBinaryTree<E> {
+	private NodeDeque node;
+
 	
 	/**
 	 * Default constructor. The tree begins empty.
 	 */
 	public MyLinkedHeapTree() {
+		NodeDeque node = new Position<E>();
 		
 	}
 
@@ -45,7 +45,18 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 	 */
 	@Override
 	public Position<E> add(E element) {
-		return null;
+		Position<E> e = new Position<E>;
+		if (this.isEmpty()) {
+			this.addRoot(e);
+		}
+		if (!this.hasLeft(e)) {
+			node.addFirst(e);
+		}
+		if (!this.hasRight(e)) {
+			node.addLast(e);
+		}
+
+		return e;
 	}
 
 	/**
@@ -58,7 +69,16 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 	 */
 	@Override
 	public E remove() throws EmptyTreeException {
-		return null;
+		Position<E> e = new Position<E>;
+		if (this.isEmpty()) {
+			node.removeLast();
+		}
+
+		if (this.hasLeft(e)) {
+			node.addFirst(e);
+		}
+
+		return e;
 	}
 	
 	/*
