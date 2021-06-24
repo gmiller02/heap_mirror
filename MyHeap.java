@@ -25,6 +25,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	// This the underlying data structure of your heap
 	private MyLinkedHeapTree<MyHeapEntry<K,V>> _tree;
 
+
 	/** 
 	 * Creates an empty heap with the given comparator. 
 	 * 
@@ -131,7 +132,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 
 		// continue here ...
 
-		return null;
+		return checkedEntry;
 	}
 
 	/** 

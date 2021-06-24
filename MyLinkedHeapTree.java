@@ -19,14 +19,14 @@ import net.datastructures.*;
 
 public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E> 
 		implements CompleteBinaryTree<E> {
-	private NodeDeque node;
+	private NodeDeque<Position<E>> _node;
 
 	
 	/**
 	 * Default constructor. The tree begins empty.
 	 */
 	public MyLinkedHeapTree() {
-		NodeDeque node = new Position<E>();
+		_node = new NodeDeque();
 		
 	}
 
@@ -45,18 +45,27 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 	 */
 	@Override
 	public Position<E> add(E element) {
-		Position<E> e = new Position<E>;
+
 		if (this.isEmpty()) {
-			this.addRoot(e);
+			this.addRoot(element);
+			_node.addLast(this.root);
+			return this.root();
 		}
-		if (!this.hasLeft(e)) {
-			node.addFirst(e);
+		if (!this.hasLeft(_node.getFirst()) && (!this.hasRight(_node.getFirst()))){
+			this.insertLeft(_node.getFirst(), element);
+			_node.addLast(this.left(_node.getFirst()));
+
+			return this.left(_node.getFirst());
 		}
-		if (!this.hasRight(e)) {
-			node.addLast(e);
+		if (this.hasLeft(_node.getFirst()) && (!this.hasRight(_node.getFirst()))){
+			this.insertRight(_node.getFirst(), element);
+			_node.addLast(this.right(_node.getFirst()));
+
+
+			return this.right(_node.getFirst());
 		}
 
-		return e;
+		return null;
 	}
 
 	/**
@@ -69,16 +78,23 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 	 */
 	@Override
 	public E remove() throws EmptyTreeException {
-		Position<E> e = new Position<E>;
 		if (this.isEmpty()) {
-			node.removeLast();
+			return null;
+		}
+		else if (!this.hasLeft(_node.getFirst()) && (!this.hasRight(_node.getFirst()))){
+			this.remove(_node.getFirst());
+			_node.removeFirst();
+
+			return null;
+		}
+		else if (this.hasLeft(_node.getFirst()) && (!this.hasRight(_node.getFirst()))){
+			this.remove(_node.getFirst());
+			_node.removeLast();
+
+			return null;
 		}
 
-		if (this.hasLeft(e)) {
-			node.addFirst(e);
-		}
-
-		return e;
+		return null;
 	}
 	
 	/*
