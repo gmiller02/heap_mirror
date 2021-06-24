@@ -24,15 +24,19 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	
 	// This the underlying data structure of your heap
 	private MyLinkedHeapTree<MyHeapEntry<K,V>> _tree;
+	private int _size;
+	private Comparator<K> _keyComparator;
 
 
 	/** 
 	 * Creates an empty heap with the given comparator. 
 	 * 
-	 * @param the comparator to be used for heap keys
+	 * @param comparator to be used for heap keys
 	 */
 	public MyHeap(Comparator<K> comparator) {
-		
+		_tree = new MyLinkedHeapTree<>();
+		_size = 0;
+		_keyComparator = comparator;
 	}
 
 	/**
@@ -71,7 +75,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 * @return an int representing the number of entries stored
 	 */
 	public int size() {
-		return 0;
+		return _size;
 	}
 
 	/** 
@@ -81,7 +85,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 * @return true if the heap is empty; false otherwise
 	 */
 	public boolean isEmpty() {
-		return true;
+		return _tree.isEmpty();
 	}
 
 	/** 
@@ -92,7 +96,10 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 * @throws EmptyPriorityQueueException if the heap is empty
 	 */
 	public Entry<K,V> min() throws EmptyPriorityQueueException {
-		return null;
+		if (_tree.isEmpty()) {
+			throw new EmptyPriorityQueueException("Heap is empty");
+		}
+		return _tree.root().element();
 	}
 
 	/** 
@@ -116,7 +123,14 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 * @throws EmptyPriorityQueueException if the heap is empty
 	 */
 	public Entry<K,V> removeMin() throws EmptyPriorityQueueException {
-		return null;
+		if (_tree.isEmpty()) {
+			throw new EmptyPriorityQueueException("Heap is empty");
+		}
+		Position<MyHeapEntry<K, V>> rootMin = _tree.root();
+		_tree.remove(rootMin);
+		//this.downHeap();
+
+		return rootMin.element();
 	}
 
 	/** 
@@ -130,7 +144,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	public Entry<K,V> remove(Entry<K,V> entry) throws InvalidEntryException {
 		MyHeapEntry<K,V> checkedEntry = this.checkAndConvertEntry(entry);
 
-		// continue here ...
+		_tree.remove(checkedEntry.getPos());
 
 		return checkedEntry;
 	}
@@ -147,10 +161,14 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 */
 	public K replaceKey(Entry<K,V> entry, K key) throws InvalidEntryException, InvalidKeyException {
 		MyHeapEntry<K,V> checkedEntry = this.checkAndConvertEntry(entry);
+		if (checkedEntry == null) {
+			throw new InvalidEntryException("Entry is null");
+		}
+		checkedEntry.setKey(key);
+		this.upHeap(checkedEntry);
+		this.downHeap(checkedEntry);
 
-		// continue here ...
-
-		return null;
+		return checkedEntry.getKey();
 	}
 
 	/** 
@@ -164,10 +182,13 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 */
 	public V replaceValue(Entry<K,V> entry, V value) throws InvalidEntryException {		
 		MyHeapEntry<K,V> checkedEntry = this.checkAndConvertEntry(entry);
+		if (checkedEntry == null) {
+			throw new InvalidEntryException("Entry is null");
+		}
 
-		// continue here ...
+		checkedEntry.setValue(value);
 
-		return null;
+		return checkedEntry.getValue();
 	}
 	
 
@@ -198,4 +219,51 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 * it easier to understand, and avoids problems in keeping 
 	 * each occurrence "up-to-date."
 	 */
+
+	public void upHeap(MyHeapEntry<K, V> entry) {
+		Position<MyHeapEntry<K, V>> parent = entry.getPos();
+		while (_keyComparator.compare(parent.element().getKey(), entry.getKey()) < 0) {
+			this.swap(parent, entry.getPos());
+
+			if (_tree.isRoot(entry.getPos())) {
+				break;
+			}
+			parent = entry.getPos();
+		}
+	}
+
+		private void downHeap (MyHeapEntry < K, V> entry){
+			Position<MyHeapEntry<K, V>> parent = entry.getPos();
+			while (_tree.isInternal(parent)) {
+				Position<MyHeapEntry<K, V>> child = null;
+				if (_tree.hasLeft(parent) && (!_tree.hasRight(parent))) {
+					child = _tree.left(parent);
+				}
+				if (_tree.hasLeft(parent) && (_tree.hasRight(parent))) {
+					if (_keyComparator.compare(_tree.left(parent).element().getKey(), _tree.right(parent).element().getKey()) < 0) {
+						child = _tree.left(parent);
+					} else {
+						child = _tree.right(parent);
+					}
+				}
+				if (_keyComparator.compare(parent.element().getKey(), child.element().getKey()) > 0) {
+					this.swap(parent, child);
+					parent = child;
+				} else {
+					break;
+				}
+			}
+
+		}
+
+
+	private void swap(Position<MyHeapEntry<K, V>> a, Position<MyHeapEntry<K, V>> b) {
+		MyHeapEntry<K, V> temp = a.element();
+
+		_tree.replace(a, b.element());
+		_tree.replace(b, a.element());
+		a.element().setPos(b);
+		b.element().setPos(a);
+	}
+
 }
