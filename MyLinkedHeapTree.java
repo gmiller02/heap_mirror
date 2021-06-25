@@ -60,10 +60,16 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 		if (this.hasLeft(_node.getFirst()) && (!this.hasRight(_node.getFirst()))){
 			this.insertRight(_node.getFirst(), element);
 			_node.addLast(this.right(_node.getFirst()));
+			Position<E> positiontoRemove = right(_node.getFirst());
+			_node.removeFirst();
 
-
-			return this.right(_node.getFirst());
+			return positiontoRemove;
 		}
+
+
+		System.out.println(_node.getLast());
+		System.out.println("Size:" + _node.size());
+
 
 		return null;
 	}

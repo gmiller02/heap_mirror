@@ -111,8 +111,10 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 */
 	public Entry<K,V> insert(K key, V value) throws InvalidKeyException {
 		MyHeapEntry<K, V> entry = new MyHeapEntry<K, V>(key, value);
+		entry.setPos(_tree.add(entry));
 
-		_tree.add(entry);
+
+		this.upHeap(entry);
 
 		return entry;
 	}
@@ -171,7 +173,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 			throw new InvalidEntryException("Entry is null");
 		}
 		checkedEntry.setKey(key);
-		this.upHeap(checkedEntry);
+		//this.upHeap(checkedEntry);
 		this.downHeap(checkedEntry);
 
 		return checkedEntry.getKey();
@@ -226,17 +228,22 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 * each occurrence "up-to-date."
 	 */
 
+
+
 	public void upHeap(MyHeapEntry<K, V> entry) {
-		Position<MyHeapEntry<K, V>> parent = entry.getPos();
-		while (_keyComparator.compare(parent.element().getKey(), entry.getKey()) < 0) {
+		Position<MyHeapEntry<K, V>> parent = _tree.parent(entry.getPos());
+		//while (_keyComparator.compare(parent.element().getKey(), entry.getKey()) > 0) {
+			System.out.println("Entry:" + entry);
+		System.out.println("Parent:" + parent);
 			this.swap(parent, entry.getPos());
 
-			if (_tree.isRoot(entry.getPos())) {
-				break;
-			}
-			parent = _tree.parent(entry.getPos());
-		}
+			//if (_tree.isRoot(entry.getPos())) {
+				//break;
+			//}
+			//parent = _tree.parent(entry.getPos());
+		//}
 	}
+
 
 		private void downHeap (MyHeapEntry < K, V> entry){
 			Position<MyHeapEntry<K, V>> parent = entry.getPos();
@@ -263,13 +270,26 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 		}
 
 
+
 	private void swap(Position<MyHeapEntry<K, V>> a, Position<MyHeapEntry<K, V>> b) {
 		MyHeapEntry<K, V> temp = a.element();
+		Position<MyHeapEntry<K, V>> aEl = a;
+
+		System.out.println("A:" + a);
+		System.out.println("tempt:" + aEl);
+		System.out.println("B:" + b);
 
 		_tree.replace(a, b.element());
-		_tree.replace(b, a.element());
-		a.element().setPos(b);
-		b.element().setPos(a);
+		_tree.replace(b, temp);
+		a.element().setPos(a);
+		b.element().setPos(b);
+
+		System.out.println("After");
+
+
+		System.out.println("A:" + a);
+		System.out.println("tempt:" + aEl);
+		System.out.println("B:" + b);
 	}
 
 }

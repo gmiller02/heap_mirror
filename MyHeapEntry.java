@@ -32,7 +32,7 @@ public class MyHeapEntry<K,V> implements Entry<K,V> {
 	}
 
 	public void setKey(K key) {
-		key = _key;
+		_key = key;
 	}
 	
 	/**
@@ -49,7 +49,8 @@ public class MyHeapEntry<K,V> implements Entry<K,V> {
 		return _value;
 	}
 
-	public void setValue(V value) {value = _value;}
+	public void setValue(V value) {
+		_value = value;}
 
 	public void setPos(Position<MyHeapEntry<K, V>> entry) {
 		_entry = entry;
