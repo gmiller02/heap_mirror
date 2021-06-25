@@ -113,8 +113,9 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 		MyHeapEntry<K, V> entry = new MyHeapEntry<K, V>(key, value);
 		entry.setPos(_tree.add(entry));
 
-
-		this.upHeap(entry);
+		if (!_tree.isRoot(entry.getPos())) {
+			this.upHeap(entry);
+		}
 
 		return entry;
 	}
@@ -173,7 +174,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 			throw new InvalidEntryException("Entry is null");
 		}
 		checkedEntry.setKey(key);
-		//this.upHeap(checkedEntry);
+		this.upHeap(checkedEntry);
 		this.downHeap(checkedEntry);
 
 		return checkedEntry.getKey();
@@ -193,7 +194,6 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 		if (checkedEntry == null) {
 			throw new InvalidEntryException("Entry is null");
 		}
-
 		checkedEntry.setValue(value);
 
 		return checkedEntry.getValue();
@@ -228,21 +228,35 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 * each occurrence "up-to-date."
 	 */
 
+	/**
+	 * This method adds a node to a heap, and when adding, compares the parent value
+	 * to the child value. If the child value is less than the parent value, the two
+	 * values are swapped.
+	 * @param entry
+	 */
 
 
 	public void upHeap(MyHeapEntry<K, V> entry) {
 		Position<MyHeapEntry<K, V>> parent = _tree.parent(entry.getPos());
-		//while (_keyComparator.compare(parent.element().getKey(), entry.getKey()) > 0) {
-			System.out.println("Entry:" + entry);
-		System.out.println("Parent:" + parent);
+
+		while (_keyComparator.compare(parent.element().getKey(), entry.getKey()) > 0) {
+
 			this.swap(parent, entry.getPos());
 
-			//if (_tree.isRoot(entry.getPos())) {
-				//break;
-			//}
-			//parent = _tree.parent(entry.getPos());
-		//}
+			if (_tree.isRoot(entry.getPos())) {
+				break;
+			}
+
+			entry = parent.element();
+		}
 	}
+
+	/**
+	 * This method is used when removing a node from the heap. It compares the value of a node
+	 * with its children. If the value is greater than one or both, it is swapped with the child of
+	 * lowest value.
+	 * @param entry
+	 */
 
 
 		private void downHeap (MyHeapEntry < K, V> entry){
@@ -266,30 +280,23 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 					break;
 				}
 			}
-
 		}
 
 
+	/**
+	 * This method swaps the entries of two nodes in order to upHeap/downHeap.
+	 * @param a
+	 * @param b
+	 */
 
 	private void swap(Position<MyHeapEntry<K, V>> a, Position<MyHeapEntry<K, V>> b) {
-		MyHeapEntry<K, V> temp = a.element();
-		Position<MyHeapEntry<K, V>> aEl = a;
+		Position<MyHeapEntry<K, V>> ogA = a;
 
-		System.out.println("A:" + a);
-		System.out.println("tempt:" + aEl);
-		System.out.println("B:" + b);
+		_tree.swapElements(a, b);
 
-		_tree.replace(a, b.element());
-		_tree.replace(b, temp);
-		a.element().setPos(a);
-		b.element().setPos(b);
+		a.element().setPos(b);
+		b.element().setPos(ogA);
 
-		System.out.println("After");
-
-
-		System.out.println("A:" + a);
-		System.out.println("tempt:" + aEl);
-		System.out.println("B:" + b);
 	}
 
 }

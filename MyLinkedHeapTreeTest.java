@@ -33,6 +33,11 @@ public class MyLinkedHeapTreeTest {
 	public void testAddOneElement() {
 		MyLinkedHeapTree<Integer> tree = new MyLinkedHeapTree<Integer>();
 		tree.add(1);
+		tree.add(2);
+		tree.add(3);
+		//tree.add(4);
+		System.out.println(tree.getNode().getFirst().element());
+		System.out.println(tree.getNode().getLast().element());
 		
 		/* These are two ways of asserting the same thing
 		 * Use whichever you find more convenient out of
@@ -40,8 +45,14 @@ public class MyLinkedHeapTreeTest {
 		 * assertTrue(boolean)
 		 * Take a look at the JUnit docs for more assertions you might want to use.
 		 */
-		assertThat(tree.size(), is(1));
-		assertTrue(tree.size() == 1);
+		//assertThat(tree.size(), is(1));
+		//assertTrue(tree.size() == 1);
+
+		//assertThat(tree.size(), is(4));
+		//assertThat(tree.remove(), is(3));
+		assertThat(tree.getNode().getFirst().element(), is(2));
+		assertThat(tree.remove(), is(3));
+		assertThat(tree.getNode().getFirst().element(), is(1));
 	}
 	
 	/**

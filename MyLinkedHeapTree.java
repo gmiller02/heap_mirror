@@ -46,31 +46,26 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 	@Override
 	public Position<E> add(E element) {
 
-		if (this.isEmpty()) {
+		if (_node.isEmpty()) {
 			this.addRoot(element);
 			_node.addLast(this.root);
 			return this.root();
 		}
-		if (!this.hasLeft(_node.getFirst()) && (!this.hasRight(_node.getFirst()))){
-			this.insertLeft(_node.getFirst(), element);
-			_node.addLast(this.left(_node.getFirst()));
+		else {
+			if (!this.hasLeft(_node.getFirst())) {
+				this.insertLeft(_node.getFirst(), element);
+				_node.addLast(this.left(_node.getFirst()));
+				return this.left(_node.getFirst());
+			}
+			else if (this.hasLeft(_node.getFirst())) {
+				this.insertRight(_node.getFirst(), element);
+				_node.addLast(this.right(_node.getFirst()));
+				Position<E> positiontoRemove = right(_node.getFirst());
+				_node.removeFirst();
 
-			return this.left(_node.getFirst());
+				return positiontoRemove;
+			}
 		}
-		if (this.hasLeft(_node.getFirst()) && (!this.hasRight(_node.getFirst()))){
-			this.insertRight(_node.getFirst(), element);
-			_node.addLast(this.right(_node.getFirst()));
-			Position<E> positiontoRemove = right(_node.getFirst());
-			_node.removeFirst();
-
-			return positiontoRemove;
-		}
-
-
-		System.out.println(_node.getLast());
-		System.out.println("Size:" + _node.size());
-
-
 		return null;
 	}
 
@@ -85,26 +80,43 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 	@Override
 	public E remove() throws EmptyTreeException {
 		if (this.isEmpty()) {
-			return null;
+			throw new EmptyTreeException("Tree is empty");
 		}
-		else if (!this.hasLeft(_node.getFirst()) && (!this.hasRight(_node.getFirst()))){
-			this.remove(_node.getFirst());
+		else if (this.hasLeft(_node.getFirst()) && (this.hasRight(_node.getFirst()))){
+			_node.addFirst(parent(_node.getLast()));
+			E element = this.remove(right((_node.getFirst())));
+			//this.remove(_node.getFirst());
 			_node.removeFirst();
 
-			return null;
+			return element;
 		}
 		else if (this.hasLeft(_node.getFirst()) && (!this.hasRight(_node.getFirst()))){
-			this.remove(_node.getFirst());
+			E element = this.remove(left(_node.getFirst()));
+			//this.remove(_node.getFirst());
 			_node.removeLast();
 
-			return null;
+			return element;
 		}
 
 		return null;
 	}
 
+	/**
+	 * This method returns the last entry in the deck.
+	 * @return
+	 */
+
 	public Position<E> getLatest() {
 		return _node.getLast();
+	}
+
+	/**
+	 * This method returns my nodeDeque.
+	 * @return
+	 */
+
+	public NodeDeque<Position<E>> getNode() {
+		return _node;
 	}
 	
 	/*
