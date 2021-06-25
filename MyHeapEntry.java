@@ -31,6 +31,11 @@ public class MyHeapEntry<K,V> implements Entry<K,V> {
 
 	}
 
+	/**
+	 * Sets the instance varible to the key parameter
+	 * @param key
+	 */
+
 	public void setKey(K key) {
 		_key = key;
 	}
@@ -49,12 +54,26 @@ public class MyHeapEntry<K,V> implements Entry<K,V> {
 		return _value;
 	}
 
-	public void setValue(V value) {
-		_value = value;}
+	/**
+	 * Sets the value instance variable to the value parameter
+	 * @param value
+	 */
+
+	public void setValue(V value) { _value = value;}
+
+	/**
+	 * This method sets the entry instance variable to the Position (myheapentry) parameter
+	 * @param entry
+	 */
 
 	public void setPos(Position<MyHeapEntry<K, V>> entry) {
 		_entry = entry;
 	}
+
+	/**
+	 * returns the position stored in this entry
+	 * @return
+	 */
 
 	public Position<MyHeapEntry<K, V>> getPos() {
 		return _entry;
