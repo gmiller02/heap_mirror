@@ -96,6 +96,10 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 
 		return null;
 	}
+
+	public Position<E> getLatest() {
+		return _node.getLast();
+	}
 	
 	/*
 	 * Feel free to add helper methods here.

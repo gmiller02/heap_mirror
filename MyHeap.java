@@ -24,7 +24,6 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	
 	// This the underlying data structure of your heap
 	private MyLinkedHeapTree<MyHeapEntry<K,V>> _tree;
-	private int _size;
 	private Comparator<K> _keyComparator;
 
 
@@ -35,7 +34,6 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 */
 	public MyHeap(Comparator<K> comparator) {
 		_tree = new MyLinkedHeapTree<>();
-		_size = 0;
 		_keyComparator = comparator;
 	}
 
@@ -75,7 +73,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 * @return an int representing the number of entries stored
 	 */
 	public int size() {
-		return _size;
+		return _tree.size();
 	}
 
 	/** 
@@ -112,7 +110,11 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 * @throws InvalidKeyException if the key is not suitable for this heap
 	 */
 	public Entry<K,V> insert(K key, V value) throws InvalidKeyException {
-		return null;
+		MyHeapEntry<K, V> entry = new MyHeapEntry<K, V>(key, value);
+
+		_tree.add(entry);
+
+		return entry;
 	}
 
 	/** 
@@ -128,7 +130,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 		}
 		Position<MyHeapEntry<K, V>> rootMin = _tree.root();
 		_tree.remove(rootMin);
-		//this.downHeap();
+		this.downHeap(_tree.root().element());
 
 		return rootMin.element();
 	}
@@ -144,9 +146,13 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	public Entry<K,V> remove(Entry<K,V> entry) throws InvalidEntryException {
 		MyHeapEntry<K,V> checkedEntry = this.checkAndConvertEntry(entry);
 
+		this.swap(checkedEntry.getPos(), _tree.getLatest());
+
 		_tree.remove(checkedEntry.getPos());
 
-		return checkedEntry;
+		this.downHeap(_tree.getLatest().element());
+
+		return _tree.getLatest().element();
 	}
 
 	/** 
@@ -228,7 +234,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 			if (_tree.isRoot(entry.getPos())) {
 				break;
 			}
-			parent = entry.getPos();
+			parent = _tree.parent(entry.getPos());
 		}
 	}
 
