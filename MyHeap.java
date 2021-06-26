@@ -149,29 +149,21 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 		}
 
 		MyHeapEntry<K,V> checkedEntry = this.checkAndConvertEntry(entry);
+		Position<MyHeapEntry<K,V>> og = checkedEntry.getPos();
 
-		System.out.println(_tree.getNode().getLast().element().getKey());
+
+		if (checkedEntry.getPos() == _tree.getLatest()) {
+			return _tree.remove();
+		}
+		this.swap(checkedEntry.getPos(), _tree.getLatest());
 
 		MyHeapEntry<K, V> removedEntry = _tree.remove();
 
-		if (checkedEntry == removedEntry) {
-			return checkedEntry;
-		}
-		this.swap(checkedEntry.getPos(), removedEntry.getPos());
-
-		//this.swap(checkedEntry.getPos(), _tree.getLatest());
-
-		//this.downHeap(_tree.root().element());
-
-		if(_tree.isInternal(checkedEntry.getPos())) {
-			this.downHeap(removedEntry);
+		if(_tree.isInternal(og)) {
+			this.downHeap(og);
 		}
 
-		if(_tree.parent(removedEntry.getPos()) != null) {
-			this.upHeap(removedEntry);
-		}
-
-		return checkedEntry;
+		return removedEntry;
 	}
 
 	/** 
@@ -191,7 +183,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 		}
 		checkedEntry.setKey(key);
 		this.upHeap(checkedEntry);
-		this.downHeap(checkedEntry);
+		this.downHeap(checkedEntry.getPos());
 
 		return checkedEntry.getKey();
 	}
@@ -278,10 +270,12 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 */
 
 
-		private void downHeap (MyHeapEntry < K, V> entry){
-			Position<MyHeapEntry<K, V>> parent = entry.getPos();
+		private void downHeap (Position<MyHeapEntry < K, V>> entry){
+			Position<MyHeapEntry < K, V>> parent = entry;
+
 			while (_tree.isInternal(parent)) {
 				Position<MyHeapEntry<K, V>> child = null;
+
 				if (_tree.hasLeft(parent) && (!_tree.hasRight(parent))) {
 					child = _tree.left(parent);
 				}
@@ -313,9 +307,8 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 
 		_tree.swapElements(a, b);
 
-		a.element().setPos(b);
-		b.element().setPos(ogA);
-
+		a.element().setPos(a);
+		b.element().setPos(b);
 	}
 
 }

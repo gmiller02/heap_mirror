@@ -3,6 +3,7 @@ package heap;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
+import net.datastructures.Position;
 import org.junit.Test;
 
 import net.datastructures.EmptyTreeException;
@@ -74,11 +75,17 @@ public class MyLinkedHeapTreeTest {
 	@Test
 	public void testOne(){
 		MyLinkedHeapTree<Integer> tree = new MyLinkedHeapTree<Integer>();
-		tree.add(8);
 		tree.add(9);
+		tree.add(7);
+		tree.add(6);
+		tree.add(1);
 		tree.remove();
+		assertThat(tree.getLatest().element(), is(1));
+		tree.add(1);
 		tree.remove();
-		assertTrue(tree.isEmpty());
+		Position<Integer> pos = tree.add(7);
+
+		//assertThat(tree.root().element(), is(pos));
 
 	}
 }

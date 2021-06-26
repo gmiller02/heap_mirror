@@ -79,44 +79,62 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 	 */
 	@Override
 	public E remove() throws EmptyTreeException {
+
 		if (_node.isEmpty() || _node.getLast() == null) {
 			throw new EmptyTreeException("Tree is empty");
 		}
-
 		else {
-
 			if (this.isRoot(_node.getLast())) {
-
-				if (this.hasLeft(_node.getLast()) && (!this.hasRight(_node.getLast()))) {
-					E element = this.remove(left(_node.getLast()));
-					_node.removeLast();
-					return element;
-				} else if (this.hasLeft(_node.getLast()) && (this.hasRight(_node.getLast()))) {
-					E element = this.remove(right(_node.getLast()));
-					_node.removeLast();
-					return element;
-				} else {
-					E element = this.remove(_node.getLast());
-					_node.removeLast();
-					return element;
-				}
-
+				return this.remove();
 			}
-
-			else if(this.hasLeft(_node.getLast()) && (this.hasRight(_node.getLast()))) {
+			if (this.hasRight(parent(_node.getLast()))){
 				_node.addFirst(parent(_node.getLast()));
-				E element = this.remove(right((this.parent(_node.getLast()))));
-				//this.remove(_node.getFirst());
+				E element = this.remove(_node.getLast());
 				_node.removeLast();
 				return element;
-			} else if (this.hasLeft(_node.getLast()) && !this.hasRight(_node.getLast())) {
-				E element = this.remove(left(parent(_node.getLast())));
-				//this.remove(_node.getFirst());
+		    }
+			if (!this.hasRight(parent(_node.getLast()))) {
+				E element = this.remove(_node.getLast());
 				_node.removeLast();
 				return element;
 			}
-			return null;
+
+//			if (this.isRoot(_node.getLast())) {
+//				System.out.println("Reached");
+//
+//				if (this.hasLeft(_node.getLast()) && (!this.hasRight(_node.getLast()))) {
+//					E element = this.remove(left(_node.getLast()));
+//					_node.removeLast();
+//					System.out.println("Reached");
+//					return element;
+//				} else if (this.hasLeft(_node.getLast()) && (this.hasRight(_node.getLast()))) {
+//					E element = this.remove(right(_node.getLast()));
+//					_node.removeLast();
+//					System.out.println("Reached");
+//					return element;
+//				} else {
+//					E element = this.remove(_node.getLast());
+//					_node.removeLast();
+//					System.out.println("Reached");
+//					return element;
+//				}
+//
+//			}
+
+//			else if(this.hasLeft(_node.getLast()) && (this.hasRight(_node.getLast()))) {
+//				_node.addFirst(parent(_node.getLast()));
+//				E element = this.remove(right((parent(_node.getLast()))));
+//				_node.removeLast();
+//				System.out.println("Reached");
+//				return element;
+//			} else if (this.hasLeft(_node.getLast()) && !this.hasRight(_node.getLast())) {
+//				E element = this.remove(left(parent(_node.getLast())));
+//				_node.removeLast();
+//				System.out.println("Reached");
+//				return element;
+//			}
 		}
+		return null;
 	}
 
 	/**
