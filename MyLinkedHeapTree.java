@@ -52,12 +52,12 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 			return this.root();
 		}
 		else {
-			if (!this.hasLeft(_node.getFirst())) {
+			if (!this.hasLeft(_node.getFirst()) && !this.hasRight(_node.getFirst())) {
 				this.insertLeft(_node.getFirst(), element);
 				_node.addLast(this.left(_node.getFirst()));
 				return this.left(_node.getFirst());
 			}
-			else if (this.hasLeft(_node.getFirst())) {
+			else if (this.hasLeft(_node.getFirst()) && !this.hasRight(_node.getFirst())) {
 				this.insertRight(_node.getFirst(), element);
 				_node.addLast(this.right(_node.getFirst()));
 				Position<E> positiontoRemove = right(_node.getFirst());
@@ -79,26 +79,44 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 	 */
 	@Override
 	public E remove() throws EmptyTreeException {
-		if (this.isEmpty()) {
+		if (_node.isEmpty() || _node.getLast() == null) {
 			throw new EmptyTreeException("Tree is empty");
 		}
-		else if (this.hasLeft(_node.getFirst()) && (this.hasRight(_node.getFirst()))){
-			_node.addFirst(parent(_node.getLast()));
-			E element = this.remove(right((_node.getFirst())));
-			//this.remove(_node.getFirst());
-			_node.removeFirst();
 
-			return element;
+		else {
+
+			if (this.isRoot(_node.getLast())) {
+
+				if (this.hasLeft(_node.getLast()) && (!this.hasRight(_node.getLast()))) {
+					E element = this.remove(left(_node.getLast()));
+					_node.removeLast();
+					return element;
+				} else if (this.hasLeft(_node.getLast()) && (this.hasRight(_node.getLast()))) {
+					E element = this.remove(right(_node.getLast()));
+					_node.removeLast();
+					return element;
+				} else {
+					E element = this.remove(_node.getLast());
+					_node.removeLast();
+					return element;
+				}
+
+			}
+
+			else if(this.hasLeft(_node.getLast()) && (this.hasRight(_node.getLast()))) {
+				_node.addFirst(parent(_node.getLast()));
+				E element = this.remove(right((this.parent(_node.getLast()))));
+				//this.remove(_node.getFirst());
+				_node.removeLast();
+				return element;
+			} else if (this.hasLeft(_node.getLast()) && !this.hasRight(_node.getLast())) {
+				E element = this.remove(left(parent(_node.getLast())));
+				//this.remove(_node.getFirst());
+				_node.removeLast();
+				return element;
+			}
+			return null;
 		}
-		else if (this.hasLeft(_node.getFirst()) && (!this.hasRight(_node.getFirst()))){
-			E element = this.remove(left(_node.getFirst()));
-			//this.remove(_node.getFirst());
-			_node.removeLast();
-
-			return element;
-		}
-
-		return null;
 	}
 
 	/**

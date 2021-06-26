@@ -131,11 +131,8 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 		if (_tree.isEmpty()) {
 			throw new EmptyPriorityQueueException("Heap is empty");
 		}
-		Position<MyHeapEntry<K, V>> rootMin = _tree.root();
-		_tree.remove(rootMin);
-		this.downHeap(_tree.root().element());
 
-		return rootMin.element();
+		return this.remove(min());
 	}
 
 	/** 
@@ -147,15 +144,34 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 * @throws InvalidEntryException if the entry cannot be removed from this heap
 	 */
 	public Entry<K,V> remove(Entry<K,V> entry) throws InvalidEntryException {
+		if (entry == null) {
+			throw new InvalidEntryException("Invalid Entry");
+		}
+
 		MyHeapEntry<K,V> checkedEntry = this.checkAndConvertEntry(entry);
 
-		this.swap(checkedEntry.getPos(), _tree.getLatest());
+		System.out.println(_tree.getNode().getLast().element().getKey());
 
-		_tree.remove(checkedEntry.getPos());
+		MyHeapEntry<K, V> removedEntry = _tree.remove();
 
-		this.downHeap(_tree.getLatest().element());
+		if (checkedEntry == removedEntry) {
+			return checkedEntry;
+		}
+		this.swap(checkedEntry.getPos(), removedEntry.getPos());
 
-		return _tree.getLatest().element();
+		//this.swap(checkedEntry.getPos(), _tree.getLatest());
+
+		//this.downHeap(_tree.root().element());
+
+		if(_tree.isInternal(checkedEntry.getPos())) {
+			this.downHeap(removedEntry);
+		}
+
+		if(_tree.parent(removedEntry.getPos()) != null) {
+			this.upHeap(removedEntry);
+		}
+
+		return checkedEntry;
 	}
 
 	/** 
@@ -237,17 +253,20 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 
 
 	public void upHeap(MyHeapEntry<K, V> entry) {
-		Position<MyHeapEntry<K, V>> parent = _tree.parent(entry.getPos());
+		Position<MyHeapEntry<K, V>> getPos = entry.getPos();
 
-		while (_keyComparator.compare(parent.element().getKey(), entry.getKey()) > 0) {
+		while (getPos != _tree.root()) {
 
-			this.swap(parent, entry.getPos());
+			Position<MyHeapEntry<K, V>> parent = _tree.parent(getPos);
 
-			if (_tree.isRoot(entry.getPos())) {
-				break;
+			if (_keyComparator.compare(parent.element().getKey(), getPos.element().getKey()) > 0) {
+				this.swap(parent, getPos);
+				getPos = parent;
 			}
 
-			entry = parent.element();
+			else {
+				break;
+			}
 		}
 	}
 

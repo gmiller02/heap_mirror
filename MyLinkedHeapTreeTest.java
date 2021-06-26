@@ -36,6 +36,7 @@ public class MyLinkedHeapTreeTest {
 		tree.add(2);
 		tree.add(3);
 		//tree.add(4);
+		//tree.add(5);
 		System.out.println(tree.getNode().getFirst().element());
 		System.out.println(tree.getNode().getLast().element());
 		
@@ -70,4 +71,14 @@ public class MyLinkedHeapTreeTest {
 	 * TODO: Write your own tests below!
 	 * Think of edge cases for add/remove and try to test your helper methods (if applicable).
 	 */
+	@Test
+	public void testOne(){
+		MyLinkedHeapTree<Integer> tree = new MyLinkedHeapTree<Integer>();
+		tree.add(8);
+		tree.add(9);
+		tree.remove();
+		tree.remove();
+		assertTrue(tree.isEmpty());
+
+	}
 }
