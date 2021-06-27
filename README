@@ -11,7 +11,8 @@ I do not think there is anything paticularly unusual about the way I created my 
 for the fact that I factored out any swapping that I had to do of my positions and entries
 into a separate method called swap in order to simplify my code. I also separated my upHeap and
 downHeap methods because they are called in more than one method, and it simplified my code to
-factor out those operations into their own methods.
+factor out those operations into their own methods. I also created a method that returns the
+last entry in the deque for testing purposes.
 
 I kept track of what was added and removed in the tree by creating two methods in my tree:
 getLatest, which returned the last entry in the deque, and getNode, which returned my entire

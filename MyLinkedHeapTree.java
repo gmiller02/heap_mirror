@@ -46,18 +46,18 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 	@Override
 	public Position<E> add(E element) {
 
-		if (_node.isEmpty()) {
+		if (_node.isEmpty()) { // adding when the deque is empty
 			this.addRoot(element);
 			_node.addLast(this.root);
 			return this.root();
 		}
 		else {
-			if (!this.hasLeft(_node.getFirst()) && !this.hasRight(_node.getFirst())) {
+			if (!this.hasLeft(_node.getFirst()) && !this.hasRight(_node.getFirst())) { // if parent node has no children
 				this.insertLeft(_node.getFirst(), element);
 				_node.addLast(this.left(_node.getFirst()));
 				return this.left(_node.getFirst());
 			}
-			else if (this.hasLeft(_node.getFirst()) && !this.hasRight(_node.getFirst())) {
+			else if (this.hasLeft(_node.getFirst()) && !this.hasRight(_node.getFirst())) { // if parent node has a left child but no right child
 				this.insertRight(_node.getFirst(), element);
 				_node.addLast(this.right(_node.getFirst()));
 				Position<E> positiontoRemove = right(_node.getFirst());
@@ -66,7 +66,7 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 				return positiontoRemove;
 			}
 		}
-		return null;
+		return null; // base case, should not be reached
 	}
 
 	/**
@@ -84,57 +84,23 @@ public class MyLinkedHeapTree<E> extends LinkedBinaryTree<E>
 			throw new EmptyTreeException("Tree is empty");
 		}
 		else {
-			if (this.isRoot(_node.getLast())) {
-				return this.remove();
+			if (this.isRoot(_node.getLast())) { // if the selected node is the root
+				return this.remove(_node.getLast());
 			}
-			if (this.hasRight(parent(_node.getLast()))){
+			if (this.hasRight(parent(_node.getLast()))){ // for right node
 				_node.addFirst(parent(_node.getLast()));
 				E element = this.remove(_node.getLast());
 				_node.removeLast();
 				return element;
 		    }
-			if (!this.hasRight(parent(_node.getLast()))) {
+			if (!this.hasRight(parent(_node.getLast()))) { // for left node
 				E element = this.remove(_node.getLast());
 				_node.removeLast();
 				return element;
 			}
 
-//			if (this.isRoot(_node.getLast())) {
-//				System.out.println("Reached");
-//
-//				if (this.hasLeft(_node.getLast()) && (!this.hasRight(_node.getLast()))) {
-//					E element = this.remove(left(_node.getLast()));
-//					_node.removeLast();
-//					System.out.println("Reached");
-//					return element;
-//				} else if (this.hasLeft(_node.getLast()) && (this.hasRight(_node.getLast()))) {
-//					E element = this.remove(right(_node.getLast()));
-//					_node.removeLast();
-//					System.out.println("Reached");
-//					return element;
-//				} else {
-//					E element = this.remove(_node.getLast());
-//					_node.removeLast();
-//					System.out.println("Reached");
-//					return element;
-//				}
-//
-//			}
-
-//			else if(this.hasLeft(_node.getLast()) && (this.hasRight(_node.getLast()))) {
-//				_node.addFirst(parent(_node.getLast()));
-//				E element = this.remove(right((parent(_node.getLast()))));
-//				_node.removeLast();
-//				System.out.println("Reached");
-//				return element;
-//			} else if (this.hasLeft(_node.getLast()) && !this.hasRight(_node.getLast())) {
-//				E element = this.remove(left(parent(_node.getLast())));
-//				_node.removeLast();
-//				System.out.println("Reached");
-//				return element;
-//			}
 		}
-		return null;
+		return null; //base case, should never reach
 	}
 
 	/**

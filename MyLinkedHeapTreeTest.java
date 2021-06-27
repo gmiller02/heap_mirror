@@ -34,12 +34,6 @@ public class MyLinkedHeapTreeTest {
 	public void testAddOneElement() {
 		MyLinkedHeapTree<Integer> tree = new MyLinkedHeapTree<Integer>();
 		tree.add(1);
-		tree.add(2);
-		tree.add(3);
-		//tree.add(4);
-		//tree.add(5);
-		System.out.println(tree.getNode().getFirst().element());
-		System.out.println(tree.getNode().getLast().element());
 		
 		/* These are two ways of asserting the same thing
 		 * Use whichever you find more convenient out of
@@ -47,14 +41,9 @@ public class MyLinkedHeapTreeTest {
 		 * assertTrue(boolean)
 		 * Take a look at the JUnit docs for more assertions you might want to use.
 		 */
-		//assertThat(tree.size(), is(1));
-		//assertTrue(tree.size() == 1);
+		assertThat(tree.size(), is(1));
+		assertTrue(tree.size() == 1);
 
-		//assertThat(tree.size(), is(4));
-		//assertThat(tree.remove(), is(3));
-		assertThat(tree.getNode().getFirst().element(), is(2));
-		assertThat(tree.remove(), is(3));
-		assertThat(tree.getNode().getFirst().element(), is(1));
 	}
 	
 	/**
@@ -72,20 +61,99 @@ public class MyLinkedHeapTreeTest {
 	 * TODO: Write your own tests below!
 	 * Think of edge cases for add/remove and try to test your helper methods (if applicable).
 	 */
+
+	/**
+	 * Test that tests the efficiancy of my add method: if the add method is adding the
+	 * nodes in the correct order in the deque.
+	 */
 	@Test
-	public void testOne(){
+	public void addTest(){
 		MyLinkedHeapTree<Integer> tree = new MyLinkedHeapTree<Integer>();
-		tree.add(9);
-		tree.add(7);
-		tree.add(6);
-		tree.add(1);
-		tree.remove();
-		assertThat(tree.getLatest().element(), is(1));
-		tree.add(1);
-		tree.remove();
-		Position<Integer> pos = tree.add(7);
-
-		//assertThat(tree.root().element(), is(pos));
-
+		tree.add(4);
+		tree.add(8);
+		tree.add(12);
+		assertThat(tree.add(6),is(tree.getLatest()));
 	}
+
+	/**
+	 * Test that tests how effective my remove method is. This test sees if the remove method
+	 * is returning the correct elements from the deque.
+	 */
+
+	@Test
+	public void removeTest() {
+		MyLinkedHeapTree<Integer> tree = new MyLinkedHeapTree<Integer>();
+		tree.add(2);
+		tree.add(4);
+		tree.add(6);
+		tree.add(8);
+		tree.add(9);
+		assertThat(tree.getNode().getLast().element(), is(9));
+		assertThat(tree.remove(), is(9));
+		assertThat(tree.getNode().getLast().element(), is(8));
+		assertThat(tree.getNode().getFirst().element(), is(4));
+	}
+
+	/**
+	 * This test makes sure that the tree identifies the correct root entry.
+	 */
+
+	@Test
+	public void rootTest() {
+		MyLinkedHeapTree<Integer> tree = new MyLinkedHeapTree<Integer>();
+		tree.add(2);
+		int i = tree.remove();
+
+		assertThat(i, is(2));
+	}
+
+	/**
+	 * This test makes sure that the children of each parent are adding in the correct places:
+	 * the largest child node goes to the right, and so on. This also tests if the children
+	 * are removing correctly.
+	 */
+
+	@Test
+	public void addLeftRight() {
+		MyLinkedHeapTree<Integer> tree = new MyLinkedHeapTree<Integer>();
+		tree.add(1);
+		tree.add(5);
+		tree.add(7);
+		assertThat(tree.left(tree.root()).element(), is(5));
+		assertThat(tree.right(tree.root()).element(), is(7));
+
+		assertThat(tree.getNode().size(), is(2)); // tests the size of the deque
+
+		tree.remove();
+		assertThat(tree.getNode().size(), is(2));
+	}
+
+	/**
+	 * This test tests the validity of the IsEmpty method by seeing if it returns true when the
+	 * tree is empty, and false if the tree is not
+	 */
+
+	@Test
+	public void testIsEmpty() {
+		MyLinkedHeapTree<Integer> tree = new MyLinkedHeapTree<Integer>();
+		assertTrue(tree.isEmpty());
+		tree.add(1);
+		assertFalse(tree.isEmpty());
+	}
+
+	/**
+	 * This test tests the validity of the size method by making a tree with four nodes,
+	 * then making sure that the size method returns a size of four.
+	 */
+
+	@Test
+	public void testSize() {
+		MyLinkedHeapTree<Integer> tree = new MyLinkedHeapTree<Integer>();
+		tree.add(4);
+		tree.add(5);
+		tree.add(8);
+		tree.add(11);
+		assertTrue(tree.size() == 4);
+	}
+
 }

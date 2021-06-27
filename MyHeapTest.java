@@ -8,8 +8,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.datastructures.EmptyPriorityQueueException;
+import net.datastructures.InvalidEntryException;
+import net.datastructures.InvalidKeyException;
 import org.junit.Ignore;
 import org.junit.Test;
+import net.datastructures.Entry;
 
 /**
  * This class can be used to test the functionality of your MyHeap implementation.
@@ -114,11 +118,119 @@ public class MyHeapTest {
 		heap.insert(1, "A");
 		heap.setComparator(new IntegerComparator());
 	}
-	
-	
+
 	/**
-	 * TODO: add your tests below!
-	 * Think of edge cases and testing for exceptions (if applicable) for insert, remove, min, removeMin, size and
-	 * your helper methods (if applicable).
+	 * Tests if the min method will throw a EmptyPriorityQueueException.
 	 */
+
+	@Test(expected = EmptyPriorityQueueException.class)
+	public void isEmpty(){
+		MyHeap<Integer, String> heap = new MyHeap<Integer, String>(new IntegerComparator());
+		heap.min();
+	}
+
+	/**
+	 * Tests if the removeMin method will throw a EmptyPriorityQueueException.
+	 */
+
+	@Test(expected = EmptyPriorityQueueException.class)
+		public void isEmpty2(){
+			MyHeap<Integer, String> heap = new MyHeap<Integer, String>(new IntegerComparator());
+			heap.removeMin();
+		}
+
+	/**
+	 * The following two methods test if the replaceKey and insert methods correctly throw
+	 * InvalidKey exceptions.
+	 */
+
+	@Test(expected = InvalidKeyException.class)
+	    public void invalidKey() {
+		MyHeap<Integer, String> heap = new MyHeap<Integer, String>(new IntegerComparator());
+		heap.replaceKey(heap.insert(5, "Help"), null);
+	}
+
+	@Test(expected = InvalidKeyException.class)
+	public void invalidKey2() {
+		MyHeap<Integer, String> heap = new MyHeap<Integer, String>(new IntegerComparator());
+		heap.insert(null, "lord");
+	}
+
+	/**
+	 * The following three methods test if the remove, replaceKey, and replaceValue methods
+	 * correctly throw InvalidEntryExceptions.
+	 */
+
+	@Test(expected = InvalidEntryException.class)
+		public void invalidEntry() {
+			MyHeap<Integer, String> heap = new MyHeap<Integer, String>(new IntegerComparator());
+			heap.remove(null);
+		}
+
+
+	@Test(expected = InvalidEntryException.class)
+		public void invalidEntry2() {
+			MyHeap<Integer, String> heap = new MyHeap<Integer, String>(new IntegerComparator());
+			heap.replaceKey(null, 4);
+		}
+
+
+	@Test(expected = InvalidEntryException.class)
+		public void invalidEntry3() {
+			MyHeap<Integer, String> heap = new MyHeap<Integer, String>(new IntegerComparator());
+			heap.replaceValue(null, "suffering");
+		}
+
+	/**
+	 * This test tests the validity of my insert and remove methods, and because upHeap and
+	 * downHeap are utilized in the test below, it also tests the validity of my upHeap
+	 * and downHeap methods.
+	 */
+
+	@Test
+	public void removeTest() {
+		MyHeap<Integer, String> heap = new MyHeap<Integer, String>(new IntegerComparator());
+		Entry<Integer, String> a = heap.insert(4, "bananna");
+		Entry<Integer, String> b = heap.insert(5, "apple");
+		Entry<Integer, String> c = heap.insert(9, "pear");
+
+		heap.remove(a);
+
+		assertThat(heap.getLastE(), is(c));
+	}
+
+	/**
+	 * This test tests the validity of my replaceKey method by seeing if my Heap effectivly replaces
+	 * the key.
+	 */
+
+	@Test
+	public void replaceKTest() {
+		MyHeap<Integer, String> heap = new MyHeap<Integer, String>(new IntegerComparator());
+		Entry<Integer, String> a = heap.insert(4, "bananna");
+		Entry<Integer, String> b = heap.insert(5, "apple");
+		Entry<Integer, String> c = heap.insert(9, "pear");
+
+		heap.replaceKey(a, 3);
+
+		assertThat(a.getKey(), is(3));
+	}
+
+	/**
+	 * This test tests the validity of my replaceValue method by seeing if my Heap effectivly replaces
+	 * the key.
+	 */
+
+	@Test
+	public void replaceVTest() {
+		MyHeap<Integer, String> heap = new MyHeap<Integer, String>(new IntegerComparator());
+		Entry<Integer, String> a = heap.insert(4, "bananna");
+		Entry<Integer, String> b = heap.insert(5, "apple");
+		Entry<Integer, String> c = heap.insert(9, "pear");
+
+		heap.replaceValue(b, "kiwi");
+		assertThat(b.getValue(), is("kiwi"));
+
+	}
+
 }

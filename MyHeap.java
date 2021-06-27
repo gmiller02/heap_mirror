@@ -97,7 +97,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 		if (_tree.isEmpty()) {
 			throw new EmptyPriorityQueueException("Heap is empty");
 		}
-		return _tree.root().element();
+		return _tree.root().element(); // gets the root element
 	}
 
 	/** 
@@ -110,11 +110,14 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	 * @throws InvalidKeyException if the key is not suitable for this heap
 	 */
 	public Entry<K,V> insert(K key, V value) throws InvalidKeyException {
+		if (key == null) {
+			throw new InvalidKeyException("Key is null");
+		}
 		MyHeapEntry<K, V> entry = new MyHeapEntry<K, V>(key, value);
-		entry.setPos(_tree.add(entry));
+		entry.setPos(_tree.add(entry)); // create entry and add to tree
 
 		if (!_tree.isRoot(entry.getPos())) {
-			this.upHeap(entry);
+			this.upHeap(entry); // upHeap when adding!
 		}
 
 		return entry;
@@ -152,15 +155,15 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 		Position<MyHeapEntry<K,V>> og = checkedEntry.getPos();
 
 
-		if (checkedEntry.getPos() == _tree.getLatest()) {
+		if (checkedEntry.getPos() == _tree.getLatest()) { // if the selected node is already last
 			return _tree.remove();
 		}
-		this.swap(checkedEntry.getPos(), _tree.getLatest());
+		this.swap(checkedEntry.getPos(), _tree.getLatest()); // swap marked entry and last entry
 
 		MyHeapEntry<K, V> removedEntry = _tree.remove();
 
 		if(_tree.isInternal(og)) {
-			this.downHeap(og);
+			this.downHeap(og); // downHeap the position of the checkedEntry
 		}
 
 		return removedEntry;
@@ -181,9 +184,12 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 		if (checkedEntry == null) {
 			throw new InvalidEntryException("Entry is null");
 		}
+		if (key == null) {
+			throw new InvalidKeyException("Key is null");
+		}
 		checkedEntry.setKey(key);
 		this.upHeap(checkedEntry);
-		this.downHeap(checkedEntry.getPos());
+		this.downHeap(checkedEntry.getPos()); // downheap when removing
 
 		return checkedEntry.getKey();
 	}
@@ -247,12 +253,12 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 	public void upHeap(MyHeapEntry<K, V> entry) {
 		Position<MyHeapEntry<K, V>> getPos = entry.getPos();
 
-		while (getPos != _tree.root()) {
+		while (getPos != _tree.root()) { // for all nodes that are not the root
 
 			Position<MyHeapEntry<K, V>> parent = _tree.parent(getPos);
 
-			if (_keyComparator.compare(parent.element().getKey(), getPos.element().getKey()) > 0) {
-				this.swap(parent, getPos);
+			if (_keyComparator.compare(parent.element().getKey(), getPos.element().getKey()) > 0) { // compare parent and child nodes
+				this.swap(parent, getPos); // swap the lesser node
 				getPos = parent;
 			}
 
@@ -276,9 +282,11 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 			while (_tree.isInternal(parent)) {
 				Position<MyHeapEntry<K, V>> child = null;
 
+				// case where node has one child
 				if (_tree.hasLeft(parent) && (!_tree.hasRight(parent))) {
 					child = _tree.left(parent);
 				}
+				// case where node has two children
 				if (_tree.hasLeft(parent) && (_tree.hasRight(parent))) {
 					if (_keyComparator.compare(_tree.left(parent).element().getKey(), _tree.right(parent).element().getKey()) < 0) {
 						child = _tree.left(parent);
@@ -286,7 +294,7 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 						child = _tree.right(parent);
 					}
 				}
-				if (_keyComparator.compare(parent.element().getKey(), child.element().getKey()) > 0) {
+				if (_keyComparator.compare(parent.element().getKey(), child.element().getKey()) > 0) { // compare and get lesser child
 					this.swap(parent, child);
 					parent = child;
 				} else {
@@ -297,18 +305,25 @@ public class MyHeap<K,V> implements HeapWrapper<K,V>, AdaptablePriorityQueue<K,V
 
 
 	/**
-	 * This method swaps the entries of two nodes in order to upHeap/downHeap.
+	 * This method swaps the entries and positions of two nodes in order to upHeap/downHeap.
 	 * @param a
 	 * @param b
 	 */
 
 	private void swap(Position<MyHeapEntry<K, V>> a, Position<MyHeapEntry<K, V>> b) {
-		Position<MyHeapEntry<K, V>> ogA = a;
 
-		_tree.swapElements(a, b);
+		_tree.swapElements(a, b); //swap entries
 
-		a.element().setPos(a);
+		a.element().setPos(a); // swaps positions
 		b.element().setPos(b);
+	}
+
+	/**
+	 * Method that returns the last entry in the deque, used for testing.
+	 */
+
+	public MyHeapEntry<K, V> getLastE() {
+		return _tree.getNode().getLast().element();
 	}
 
 }
