@@ -1,0 +1,27 @@
+heap README
+
+handin: this is my final handin
+
+Design choices: In my MyHeapEntry class, I decided to make getter and setter methods for my keys
+and values. These methods helped me to design my replaceKey and replaceValue methods in my
+MyHeap class. I also created setter and getter methods that returned the position of the entry
+input, so that in MyHeap, I could access the position of any entries that I created.
+
+I do not think there is anything paticularly unusual about the way I created my MyHeap, except
+for the fact that I factored out any swapping that I had to do of my positions and entries
+into a separate method called swap in order to simplify my code. I also separated my upHeap and
+downHeap methods because they are called in more than one method, and it simplified my code to
+factor out those operations into their own methods.
+
+I kept track of what was added and removed in the tree by creating two methods in my tree:
+getLatest, which returned the last entry in the deque, and getNode, which returned my entire
+deque. I used getNode in my test cases to test the validity of my code, and I used getLatest
+in MyHeap whenever a method required having the last node in the deque.
+
+The runtime of both my add and remove methods in MyLinkedHeapTree is O(1), as I did not
+use recursion or for loops to execute my code. Both of those methods were built by using pre-made
+methods that the code already contained.
+
+Known bugs: I have no known bugs.
+
+Explanation of test cases:
